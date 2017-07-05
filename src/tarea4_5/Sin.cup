@@ -1,0 +1,59 @@
+package tarea4_5;
+import java_cup.runtime.*;
+
+parser code 
+{:
+
+   
+    /**
+     * Método al que se llama automáticamente ante algún error sintactico.
+     **/ 
+    public void syntax_error(Symbol s){ 
+            System.out.println("Error Sintáctico en la Línea " + (s.left) +" Columna "+s.right+ ". No se esperaba este componente: " +s.value+"."); 
+    } 
+    /**
+     * Método al que se llama en el momento en que ya no es posible una recuperación de errores.
+     **/ 
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+            System.out.println("Error síntactico irrecuperable en la Línea " + (s.left)+ " Columna "+s.right+". Componente " + s.value + " no reconocido."); 
+    }  
+
+
+:} 	
+
+terminal coma, parIzq, parDer;
+terminal String num;
+
+non terminal S;
+non terminal Punto  L, E;
+
+start with S;
+
+
+S ::= L:origen
+	{:
+		System.out.println( "(" + origen.cercano.getX() + "," + origen.cercano.getY() + ")" );
+		System.out.println("Distancia " + origen.getDistancia());
+	:}
+ ;
+
+L ::= L:origen  coma E: next
+	 {:
+	 	RESULT = origen;
+	 	if(RESULT.checkNext(next)){
+	 		RESULT.setCercano(next);
+	 	}		
+	 :}
+	 | E: primero
+	 {:
+	 	RESULT = primero;
+	 :}
+;
+
+E ::=  parIzq num:n1 coma num:n2 parDer 
+	   {:
+	   		RESULT= new Punto(Double.parseDouble(n1), Double.parseDouble(n2));
+
+	   :}
+;
+
